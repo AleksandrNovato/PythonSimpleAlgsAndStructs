@@ -34,11 +34,11 @@ class MyQueue:
         self.body.insert(0,item)
         self.length+=1
     def remove(self):
-        """removes and gets first inserted item from the queue in  O(1) if queue is empty raise IndexError"""
+        """removes and gets first inserted item from the queue in  O(1) if queue is empty return None"""
         if self.length >0:
             return self.body.pop()
         else:
-            raise IndexError
+            return None
 
 class MyLinkedList:
     """linked list implementation"""
