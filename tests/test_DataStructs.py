@@ -36,33 +36,34 @@ class Test_Structs_lib(unittest.TestCase):
                 queue.add(random.randint)
             self.assertEqual(first,queue.take())#queue returns correct element
 
-    def test_DoubleLinkedList(self):
+    def test_Deque(self):
     
-        for i in range(10):
-            l=sl.MyDoubleLinkedList()
-            random.seed()
-            number_of_items=random.randint(5,1000)
-            for i in range(number_of_items):
-                l.add(random.randint(-1000,1000))
-            l.add('hello world')            
-            self.assertEqual(True,l.search('hello world'))
-            self.assertEqual('hello world',l.get())
-            l.delete('hello world')
-            self.assertEqual(False,l.search('hello world'))
-
-            place_of_insertion=random.randint(0,number_of_items)
-            l.insert('hello world',place_of_insertion)
-            self.assertEqual(True,l.search('hello world'))
+        for i in range(100):
+            l=sl.MyDeque()
             
-            for i in range(number_of_items+1):
-                s=l.get()
-            self.assertEqual(None,l.get())
-        
+            random.seed()
+            number_of_items=random.randint(0,1000)
+            for i in range(number_of_items):
+                added_first=random.randint(-10000,1000)
+                l.add_first(added_first)
+                added_last=random.randint(-10000,1000)
+                l.add_last(added_last)
+                self.assertEqual(added_first,l.get_first())
+                self.assertEqual(added_last,l.get_last())
+            assert(l.get_first()==None)
+            assert(l.get_last()==None)
 
-        
-        
+            number_of_items=random.randint(0,1000)
+            place_of_insertion=random.randint(0,number_of_items)
+            for i in range(number_of_items):
+                l.add_last(random.randint(-10000,10000))
+            l.insert('!',random.randint(0,number_of_items))
+            self.assertEqual(True,l.search('!'))
+            l.delete('!')
+            self.assertEqual(False,l.search('!'))             
 
-
+    def test_Hash(self):
+        pass
 if __name__=='__main__':
     unittest.main()
 
