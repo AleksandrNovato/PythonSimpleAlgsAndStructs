@@ -1,13 +1,16 @@
 import Structs_lib as sl
 import random
-h=sl.NaiveHashMap(3)
-h.insert('Apple','Misha')
-h.insert('Google','Grisha')
-h.insert('Apple','Norgrim')
-h.insert('Yandex','Kisha')
-h.print_hash()
-h.delete('Apple','Misha')
-h.print_hash()
+h=sl.NaiveHashMap(5)
+h.add('Apple','Misha')
+h.add('Google','Grisha')
+h.add('Apple','Norgrim')
+h.add('Yandex','Kisha')
+h.add('Alyaska','Kitty')
+
+print(h)
+h.debug()
+#h.delete_key('Apple')
+#print(h)
 
 
 

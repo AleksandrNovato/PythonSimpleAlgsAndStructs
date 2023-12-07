@@ -182,46 +182,88 @@ class NaiveHashMap:
         assert(size>0)
         self.size=size
         self.body=[None]*(size)
-        self.items=0
-    def print_hash(self):
-        """prints hash map if key and value can be args for print() method"""
-        print(f"{self.body}")
-    def insert(self,key,value):
+        self.n_keys=0
+    def __str__(self):
+        """it works but REFACROR TRIPLE NESTED LOOP"""
+        returned=str()
+        tmp=[]
+        for cell in self.body:
+            if cell==None:
+                #tmp.append('{'+str(None)+':'+str(None)+'};')
+                pass
+            else:
+                for (k,v) in cell:
+                    tmp.append('{'+str(k)+':')
+                    for value in v:
+                        tmp.append(str(value))
+                        tmp.append(',')
+                    tmp=tmp[:-1]
+                    tmp.append('}')
+                    tmp.append(';')
+        return '['+returned.join(tmp)[:-1]+']'
+    def __iter__(self):
+        return self
+    def __next__(self):
+        pass       
+    def set(self,key,value):
+        """set value to the key,if key is already exist replace it O(1) if where aro not many collisions in map"""
+        self.delete_key(key)
+        self.add(key,value)                
+    def add(self,key,value):
         """adds to hashmap pair (key,value) in O(1) adds value to key if key is already exists"""
         index=self.MyHash(key)        
         if self.body[index]==None:
-            self.body[index]=[(key,value)]
+            self.body[index]=[[key,[value]]]
+            self.n_keys+=1            
         else:
-            for (key_old,value_old) in self.body[index]:
-                if (key_old,value_old)==(key,value):
+            for (k,v) in self.body[index]:
+                if k==key:
+                    v.append(value)
                     return
-            self.body[index].append((key,value))          
+            self.body[index].append([key,[value]])
+            self.n_keys+=1                      
     def get(self,key):
-        "returns all values assigned to key  O(1) if where is little collisions in map.if key is not in map returns KeyError"
+        """returns all values assigned to key  O(1) if where is little collisions in map.if key is not in map returns KeyError"""
         index=self.MyHash(key)
         if self.body[index]==None:
             raise KeyError
         else:
-            list_of_values=[]
             for (k,v) in self.body[index]:
                 if k==key:
-                    list_of_values.append(v)
-            if list_of_values==[]:
-                raise KeyError
-            return list_of_values
-                    
-    def delete(self,key,value):
-        "deletes pair key value from map in 0(1) if where is little coliision in map ,if key had several values the rests will remain."
+                    return v
+            raise KeyError                    
+    def delete_pair(self,key,value):
+        """deletes pair key value from map in 0(N) if where is little coliision in map ,if key had several values the rests will remain."""
+        index=self.MyHash(key)
+        if self.body[index]==None:
+            return
+        else:
+            for (k,v) in self.body[index]:
+                if k==key and value in v:
+                    v.pop(v.index(value))
+                    if len(v)==0:
+                        self.delete_key(key)                
+                if self.body[index]==[]:self.body[index]=None
+    def delete_key(self,key):
+        """deletes all values assigned to the key in 0(1) if where are not many collisions"""
         index=self.MyHash(key)
         if self.body[index]==None:
             return
         else:
             indx=0
             for (k,v) in self.body[index]:
-                if (k,v)==(key,value):
+                if key==k:
                     self.body[index].pop(indx)
+                    self.n_keys-=1
+                    if self.body[index]==[]:self.body[index]=None                    
+                    return
                 indx+=1
-            return
+    def debug(self):
+        print(self.body)
+        print('n_positions=',len(self.body))
+        print('n_keys=',self.n_keys)
+        
+
                     
 
 
