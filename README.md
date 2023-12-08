@@ -1,2 +1,2 @@
 # PythonSimpleAlgsAndStructs
-#lib currently empty and locates in tests
+#lib currently empty and actualy locates in tests
