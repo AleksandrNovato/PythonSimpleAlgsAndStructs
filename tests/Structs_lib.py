@@ -10,20 +10,21 @@ class MyStack:
         self.body=[]
         self.length=0
     def pop(self):
-        """pop() method returns last item from the stack O(1),if its empty returns None"""
+        """pop() method returns last item from the stack O(1),if its empty panics with IndexError"""
         if self.length >0:
             self.length-=1
             poped=self.body.pop()
             return poped
         else:
-            return None
+            raise IndexError
     def push(self,item):
         """push() method adds element to the end of the stack body O(1)"""
         self.body.append(item)
         self.length+=1
-
 class MyQueue:
-    """bad queue realization MyDeque has much better perfomanse due to be a double linked list not a array"""
+    """No reasons to use due to MyDeque
+    bad queue realization MyDeque has much better perfomanse due to be a double linked list not a array
+    and also MyDeque has all functionality of queue,so i just leave it to be"""
 
     def __init__(self) -> None:
         """queue contains its body as empty list and its length=0"""
@@ -39,16 +40,13 @@ class MyQueue:
             return self.body.pop()
         else:
             return None
-
 class MyDeque:
-    """simple double linked list implementation,contain length of itself"""
+    """simple double linked list implementation,contain length of itself """
 
     def __init__(self) -> None:
         self.last=None
         self.first=None
-        self.length=0
-    
-
+        self.length=0 
     def add_last(self,data):
         """adds element after last element in list in O(1)"""
         added_node=NodeForLinkedList(data)
@@ -61,6 +59,8 @@ class MyDeque:
             added_node.previos_node=self.last
             self.last=added_node
             self.length+=1
+    def __iter__(self):
+        return LinkedListIterator(self.first)       
     def add_first(self,data):
         """adds element before first element in list in O(1)"""
         added_node=NodeForLinkedList(data)
@@ -73,14 +73,11 @@ class MyDeque:
             added_node.next_node=self.first
             self.first=added_node
             self.length+=1   
-    def print_list(self):
-        """showes content of list only if elements of list can be arg for print() method"""
-        current=self.first
-        if current==None:print("list is empty")
-        while current!=None:
-            print(current.data,end=",")
-            current=current.next_node
-        print(f"[{self.length}]",'\n',end="")
+    def __str__(self) -> str:
+        returned='<-'
+        for node in self:
+            returned=''.join([returned,str(node),','])
+        return returned[:-1]+'->'
     def get_last(self):
         """returns and deletes.last element from list in O(1) if list is empty returns None"""
         if self.length==0:#empty list
@@ -156,9 +153,16 @@ class MyDeque:
             inserted_data.previos_node=current
             current.next_node.previos_node=inserted_data
             current.next_node=inserted_data
-            self.length+=1 
-  
-
+            self.length+=1
+    def rotate(self):
+        """displase linked list forvard in n positions 
+        node1,node2...nodeN-1,nodeN--->>> nodeN,node1,node2...nodeN-1
+         O(1)  """        
+        if self.length==0 or self.length==1:
+            return
+        new_first=self.last
+        self.get_last()
+        self.add_first(new_first.data)        
 class NodeForLinkedList:
     """class to store in linked list"""
 
@@ -167,9 +171,21 @@ class NodeForLinkedList:
         self.data=data
         self.next_node=None
         self.previos_node=None
-    
+class LinkedListIterator:
+    def __init__(self,first) -> None:
+        self.current=first
+    def __iter__(self):
+        return self
+    def __next__(self):
+        if self.current==None:
+            raise StopIteration
+        else:
+            data=self.current.data
+            self.current=self.current.next_node
+            return data
 class NaiveHashMap:
-    """simple hash map implementation methods works in O(1) while map is not overfilled,else O(N)"""
+    """simple hash map implementation. methods works in O(1) while map is not overfilled,else O(N)"""
+
     def MyHash(self,key):
         tmp=str(key)
         size=self.size
@@ -184,10 +200,10 @@ class NaiveHashMap:
         self.body=[None]*(size)
         self.n_keys=0
     def __str__(self) -> str:
-        returned='['
+        returned='|||'
         for (k,v) in self:
             returned=''.join([returned,'{',str(k),':',(','.join(str(value) for value in v)),'}',';'])
-        return returned[:-1]+']'
+        return returned[:-1]+'|||'
     def __iter__(self):
         for cell in self.body:
             if cell==None:

@@ -11,19 +11,19 @@ import Structs_lib as sl
 class Test_Structs_lib(unittest.TestCase):
 
     def test_Stack(self):
-        for i in range(10):
-            last_pushed=None
-            random.seed()
+        for i in range(100):
             stack=sl.MyStack()
+            random.seed()
             number_of_items=random.randint(1,1000)
             for i in range(number_of_items):
                 last_pushed=random.randint(-100000,100000)
-                stack.push(last_pushed)      
+                stack.push(last_pushed)
+            #filling our stack      
             self.assertEqual(last_pushed,stack.pop())#stack returns correct element
-            for i in range(2*number_of_items):
+            for i in range(number_of_items-1):
                 stack.pop()
-            self.assertEqual(None,stack.pop())#stack returns None if its empty
-
+            with self.assertRaises(IndexError):
+                stack.pop()#stack panics
     def test_Queue(self):
         for i in range(10):
             random.seed()
@@ -36,12 +36,10 @@ class Test_Structs_lib(unittest.TestCase):
             for i in range(number_of_items):
                 queue.add(random.randint)
             self.assertEqual(first,queue.take())#queue returns correct element
-
     def test_Deque(self):
     
         for i in range(10):
-            l=sl.MyDeque()
-            
+            l=sl.MyDeque()            
             random.seed()
             number_of_items=random.randint(0,1000)
             for i in range(number_of_items):
@@ -49,20 +47,39 @@ class Test_Structs_lib(unittest.TestCase):
                 l.add_first(added_first)
                 added_last=random.randint(-10000,1000)
                 l.add_last(added_last)
+                #filling our deque
                 self.assertEqual(added_first,l.get_first())
                 self.assertEqual(added_last,l.get_last())
-            assert(l.get_first()==None)
-            assert(l.get_last()==None)
+                #get_first(),add_first(),get_last(),add_last() works corecctly
+            self.assertEqual(l.get_first(),None)
+            self.assertEqual(l.get_last(),None)
+            #make sure we extracted all items,there is nothin unexpected in deque
 
             number_of_items=random.randint(0,1000)
             place_of_insertion=random.randint(0,number_of_items)
+            #picking place of insertion
             for i in range(number_of_items):
                 l.add_last(random.randint(-10000,10000))
+            #filling our deque again
             l.insert('!',random.randint(0,number_of_items))
             self.assertEqual(True,l.search('!'))
             l.delete('!')
-            self.assertEqual(False,l.search('!'))             
-
+            self.assertEqual(False,l.search('!'))
+            #insert() and delete() inserts and deletes
+            l2=sl.MyDeque()
+            check_list=[]
+            for i in range(number_of_items):
+                l2.add_last(i)
+                check_list.append(i)
+            #filling queue with sequential numbers from 1 to randint
+            from_gen=[number for number in l2]
+            self.assertEqual(check_list,from_gen)
+            #__Iter__() works correctly
+            l2.rotate()
+            from_gen=[number for number in l2]
+            check_list.insert(0,check_list.pop())
+            self.assertEqual(check_list,from_gen)
+            #rotate works correctly
     def test_Hash(self):
         for i in range(100):
             random.seed()
