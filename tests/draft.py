@@ -6,11 +6,12 @@ h.add('Google','Grisha')
 h.add('Apple','Norgrim')
 h.add('Yandex','Kisha')
 h.add('Alyaska','Kitty')
-
+#h.debug()
 print(h)
-h.debug()
-#h.delete_key('Apple')
-#print(h)
+
+for item in h:
+    print(item)
+
 
 
 

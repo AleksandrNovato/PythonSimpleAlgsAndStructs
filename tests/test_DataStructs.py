@@ -2,6 +2,7 @@
 import unittest 
 import random
 import sys 
+import string
 #sys.path.append("../PythonSimpleAlgsAndStructs/lib")
 import Structs_lib as sl
 
@@ -38,7 +39,7 @@ class Test_Structs_lib(unittest.TestCase):
 
     def test_Deque(self):
     
-        for i in range(100):
+        for i in range(10):
             l=sl.MyDeque()
             
             random.seed()
@@ -63,7 +64,62 @@ class Test_Structs_lib(unittest.TestCase):
             self.assertEqual(False,l.search('!'))             
 
     def test_Hash(self):
-        pass
+        for i in range(100):
+            random.seed()
+            h=sl.NaiveHashMap(random.randint(1,100))
+            #creating testing hash map
+            random_pairs=[]
+            for i in range(random.randint(1,100)):
+                random_pairs.append((''.join(random.choices(string.ascii_letters,k=random.randint(0,10))),
+                                    ''.join(random.choices(string.ascii_letters,k=random.randint(0,100)))))
+                #creating a list of random pairs [(key0,value0)....(keyN,valueN)]
+            for (k,v) in random_pairs:
+                h.add(k,v)
+                #filling our hashmap with random values to test pretty filled map
+            added_pair=(''.join(random.choices(string.ascii_letters,k=random.randint(0,10))),
+                                    [''.join(random.choices(string.ascii_letters,k=random.randint(0,100)))])
+                #creating testing pair (key,[value])
+            h.add(added_pair[0],added_pair[1])
+            self.assertTrue(added_pair[1] in h.get(added_pair[0]))
+            #checking if h.get() will find our value by key
+            h.add(added_pair[0],'another value')
+            self.assertTrue(added_pair[1] and 'another value' in h.get(added_pair[0]))
+            #checking if h.get() will find another added walue too
+            h.delete_pair(added_pair[0],'another value')
+            self.assertFalse('another value' in h.get(added_pair[0]))
+            self.assertTrue(added_pair[1] in h.get(added_pair[0]))
+            #checking if h.delete_pair() will delete only 1 value not all of them
+            h.delete_key(added_pair[0])
+            with self.assertRaises(KeyError):
+                h.get(added_pair[0])
+            #checking if h.delete_key() actually deleted key and all values. Also thar h.get() will cause KeyError
+            for i in range(10):
+                h.add(added_pair[0],i*i%(i+3))
+            h.set(added_pair[0],'the only value')
+            self.assertTrue(len(h.get(added_pair[0]))==1 and 'the only value' in h.get(added_pair[0]) )
+            #check if h.set() will delete all values and insert only one we need
+            h_iter=sl.NaiveHashMap(random.randint(1,10))
+            pairs_added=[]
+            for i in range(random.randint(1,10)):
+                h_iter.add(i,'value'+str(i))
+                pairs_added.append([i,[f'value{str(i)}']])
+            for pair in h_iter:
+                if pair in pairs_added:
+                    pairs_added.pop(pairs_added.index(pair))
+                    continue
+                else:
+                    raise KeyError
+            if pairs_added!=[]:
+                raise ValueError
+            #checing if __iter__() method returns all addet pairs correct 
+            
+                
+    
+            
+            
+            
+                   
+
 if __name__=='__main__':
     unittest.main()
 

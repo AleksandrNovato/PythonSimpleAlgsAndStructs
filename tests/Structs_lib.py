@@ -169,7 +169,7 @@ class NodeForLinkedList:
         self.previos_node=None
     
 class NaiveHashMap:
-    """simple hash map implementation"""
+    """simple hash map implementation methods works in O(1) while map is not overfilled,else O(N)"""
     def MyHash(self,key):
         tmp=str(key)
         size=self.size
@@ -183,33 +183,22 @@ class NaiveHashMap:
         self.size=size
         self.body=[None]*(size)
         self.n_keys=0
-    def __str__(self):
-        """it works but REFACROR TRIPLE NESTED LOOP"""
-        returned=str()
-        tmp=[]
+    def __str__(self) -> str:
+        returned='['
+        for (k,v) in self:
+            returned=''.join([returned,'{',str(k),':',(','.join(str(value) for value in v)),'}',';'])
+        return returned[:-1]+']'
+    def __iter__(self):
         for cell in self.body:
             if cell==None:
-                #tmp.append('{'+str(None)+':'+str(None)+'};')
-                pass
-            else:
-                for (k,v) in cell:
-                    tmp.append('{'+str(k)+':')
-                    for value in v:
-                        tmp.append(str(value))
-                        tmp.append(',')
-                    tmp=tmp[:-1]
-                    tmp.append('}')
-                    tmp.append(';')
-        return '['+returned.join(tmp)[:-1]+']'
-    def __iter__(self):
-        return self
-    def __next__(self):
-        pass       
-    def set(self,key,value):
+                continue
+            for pair in cell:
+                yield pair  
+    def set(self,key,value) -> None:
         """set value to the key,if key is already exist replace it O(1) if where aro not many collisions in map"""
         self.delete_key(key)
         self.add(key,value)                
-    def add(self,key,value):
+    def add(self,key,value) -> None:
         """adds to hashmap pair (key,value) in O(1) adds value to key if key is already exists"""
         index=self.MyHash(key)        
         if self.body[index]==None:
@@ -222,7 +211,7 @@ class NaiveHashMap:
                     return
             self.body[index].append([key,[value]])
             self.n_keys+=1                      
-    def get(self,key):
+    def get(self,key)-> list:
         """returns all values assigned to key  O(1) if where is little collisions in map.if key is not in map returns KeyError"""
         index=self.MyHash(key)
         if self.body[index]==None:
@@ -232,8 +221,8 @@ class NaiveHashMap:
                 if k==key:
                     return v
             raise KeyError                    
-    def delete_pair(self,key,value):
-        """deletes pair key value from map in 0(N) if where is little coliision in map ,if key had several values the rests will remain."""
+    def delete_pair(self,key,value) -> None:
+        """deletes pair key value from map in 0(1) if where is little coliision in map ,if key had several values the rests will remain."""
         index=self.MyHash(key)
         if self.body[index]==None:
             return
@@ -244,7 +233,7 @@ class NaiveHashMap:
                     if len(v)==0:
                         self.delete_key(key)                
                 if self.body[index]==[]:self.body[index]=None
-    def delete_key(self,key):
+    def delete_key(self,key) -> None:
         """deletes all values assigned to the key in 0(1) if where are not many collisions"""
         index=self.MyHash(key)
         if self.body[index]==None:
@@ -258,7 +247,7 @@ class NaiveHashMap:
                     if self.body[index]==[]:self.body[index]=None                    
                     return
                 indx+=1
-    def debug(self):
+    def debug(self) -> None:
         print(self.body)
         print('n_positions=',len(self.body))
         print('n_keys=',self.n_keys)
