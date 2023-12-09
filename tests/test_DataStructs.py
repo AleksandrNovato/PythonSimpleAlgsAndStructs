@@ -38,7 +38,7 @@ class Test_Structs_lib(unittest.TestCase):
             self.assertEqual(first,queue.take())#queue returns correct element
     def test_Deque(self):
     
-        for i in range(10):
+        for i in range(100):
             l=sl.MyDeque()            
             random.seed()
             number_of_items=random.randint(0,1000)
@@ -128,8 +128,29 @@ class Test_Structs_lib(unittest.TestCase):
                     raise KeyError
             if pairs_added!=[]:
                 raise ValueError
-            #checing if __iter__() method returns all addet pairs correct 
-            
+            #checing if __iter__() method returns all added pairs correct
+    def test_Matrix_L_of_L(self):
+        for i in range(100):
+            random.seed()
+            rows=random.randint(1,100)
+            columns=random.randint(1,100)
+            m=sl.Matrix_as_list_of_lists(rows,columns)
+            self.assertEqual(m.body,[[None]*columns]*rows)
+            with self.assertRaises(AssertionError):
+                m2=sl.Matrix_as_list_of_lists(random.randint(-100,0),random.randint(-100,0))
+            #initialize and check correct initialization
+            m.add_column()
+            m.add_row()
+            self.assertEqual(m.body,[[None]*(columns+1)]*(rows+1))
+            #add row and column works correctly
+            row=random.randint(0,rows-1)
+            column=random.randint(0,columns-1)
+            m.place_data('data',row,column)
+            self.assertEqual('data',m.body[row][column])
+            self.assertEqual(m.get_data(row,column),'data')
+            #palce_data() and get_data() works correctly
+
+                        
                 
     
             

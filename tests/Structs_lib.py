@@ -22,9 +22,9 @@ class MyStack:
         self.body.append(item)
         self.length+=1
 class MyQueue:
-    """No reasons to use due to MyDeque
-    bad queue realization MyDeque has much better perfomanse due to be a double linked list not a array
-    and also MyDeque has all functionality of queue,so i just leave it to be"""
+    """No reasons to use due to faster and more functional MyDeque.
+    bad queue realization. MyDeque has much better perfomanse due to be a double linked list not a array
+    and also MyDeque has all functionality of queue,so ill just leave it to be"""
 
     def __init__(self) -> None:
         """queue contains its body as empty list and its length=0"""
@@ -196,6 +196,7 @@ class NaiveHashMap:
         return place    
     def __init__(self,size:int) -> None:
         assert(size>0)
+        assert(type(size)==int)
         self.size=size
         self.body=[None]*(size)
         self.n_keys=0
@@ -267,6 +268,58 @@ class NaiveHashMap:
         print(self.body)
         print('n_positions=',len(self.body))
         print('n_keys=',self.n_keys)
+class Matrix_as_list_of_lists:
+    """simple matrix [[e11 e12...e1j], [e21 e22...e2j]...[ei1 ei2...eij]]
+    each line is array inside main array i-index in main array(represents row) 
+    j-index in array inside(represents column)"""
+
+    def __init__(self,rows:int=1,columns:int=1) -> None:
+        """initialize be number of rows and columns"""
+        assert(rows>0 and columns>0)
+        assert(type(rows)==int and type(columns==int))
+        self.rows=rows
+        self.columns=columns
+        self.body=[]
+        for i in range(rows):
+            row=[]
+            for j in range(columns):
+                row.append(None)
+            self.body.append(row)
+    def add_column(self):
+        for row in self.body:
+            row.append(None)
+        self.columns+=1
+    def add_row(self):
+        self.body.append([None]*self.columns)
+        self.rows+=1
+    def __str__(self) -> str:
+        returned=''
+        for row in self.body:
+            for column in row:
+                returned=returned+'|'+str(column)+' |'
+            returned=returned+'\n'
+        return returned[:-1]
+    def __iter__(self):
+        for row in self.body:
+            for column in row:
+                yield column
+    def place_data(self,data,row:int,column:int):
+        """places data in sertain position in matrix if index out of bound raises assertion error
+        first element in matrix has index[0][0] last-index[rows-1][columns-1]
+          O(1)"""
+        assert(row>=0 and row<=self.rows-1 and column>=0 and column<=self.columns-1)
+        assert(type(row)==int and type(column==int))
+        self.body[row][column]=data
+    def get_data(self,row:int,column:int):
+        """gets data from matrix if indexes are nor correct raises assertion error
+          O(1)"""
+        assert(row>=0 and row<=self.rows-1 and column>=0 and column<=self.columns-1)
+        assert(type(row)==int and type(column==int))
+        extracted=self.body[row][column]
+        return extracted
+class Matrix_linearized:
+    def __init__(self) -> None:
+        pass
         
 
                     
