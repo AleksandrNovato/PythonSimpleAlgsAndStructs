@@ -71,13 +71,15 @@ class Test_Structs_lib(unittest.TestCase):
             for i in range(number_of_items):
                 l2.add_last(i)
                 check_list.append(i)
-            #filling queue with sequential numbers from 1 to randint
+            #filling queue and check list with sequential numbers from 1 numb_of_items
             from_gen=[number for number in l2]
             self.assertEqual(check_list,from_gen)
             #__Iter__() works correctly
             l2.rotate()
             from_gen=[number for number in l2]
-            check_list.insert(0,check_list.pop())
+            if len(check_list)==0:
+                continue
+            else:check_list.insert(0,check_list.pop())
             self.assertEqual(check_list,from_gen)
             #rotate works correctly
     def test_Hash(self):
@@ -149,17 +151,35 @@ class Test_Structs_lib(unittest.TestCase):
             self.assertEqual('data',m.body[row][column])
             self.assertEqual(m.get_data(row,column),'data')
             #palce_data() and get_data() works correctly
-
-                        
-                
-    
-            
-            
-            
-                   
-
+    def test_Matrix_linearized(self):
+        for i in range(100):
+            random.seed()
+            rows=random.randint(1,100)
+            columns=random.randint(1,100)
+            m=sl.Matrix_linearized(rows,columns)
+            self.assertEqual(m.body,[None]*columns*rows)
+            with self.assertRaises(AssertionError):
+                m2=sl.Matrix_as_list_of_lists(random.randint(-100,0),random.randint(-100,0))
+            #initialize and check correct initialization
+            m.add_column()
+            m.add_row()
+            self.assertEqual(m.body,[None]*(columns+1)*(rows+1))
+            #add row and column works correctly
+            row=random.randint(0,rows-1)
+            column=random.randint(0,columns-1)
+            m.place_data('data',row,column)
+            self.assertEqual('data',m.body[(m.columns*row)+column])
+            self.assertEqual(m.get_data(row,column),'data')
+            #palce_data() and get_data() works correctly
+    def test_next(self):
+        pass
+    def test_next(self):
+        pass
+    def test_next(self):
+        pass
 if __name__=='__main__':
     unittest.main()
+
 
 
 
