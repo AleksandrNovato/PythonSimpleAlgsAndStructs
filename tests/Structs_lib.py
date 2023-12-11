@@ -51,7 +51,7 @@ class MyDeque:
         self.length=0 
     def add_last(self,data:Any):
         """adds element after last element in list in O(1)"""
-        added_node=NodeForLinkedList(data)
+        added_node=self.NodeForLinkedList(data)
         if self.last==None:#empty list
             self.last=added_node
             self.first=added_node
@@ -62,10 +62,10 @@ class MyDeque:
             self.last=added_node
             self.length+=1
     def __iter__(self)->iter:
-        return LinkedListIterator(self.first)       
+        return self.LinkedListIterator(self.first)       
     def add_first(self,data:Any)->None:
         """adds element before first element in list in O(1)"""
-        added_node=NodeForLinkedList(data)
+        added_node=self.NodeForLinkedList(data)
         if self.first==None:#empty list
             self.last=added_node
             self.first=added_node
@@ -147,7 +147,7 @@ class MyDeque:
         if self.length==index:#insertion after last element of list
             self.add_last(data)   
         else:#common case
-            inserted_data=NodeForLinkedList(data)
+            inserted_data=self.NodeForLinkedList(data)
             current=self.first
             for i in range(index-1):#between current and current.next_node
                 current=current.next_node
@@ -164,27 +164,27 @@ class MyDeque:
             return
         new_first=self.last
         self.get_last()
-        self.add_first(new_first.data)        
-class NodeForLinkedList:
-    """class to store in linked list"""
+        self.add_first(new_first.data) 
+    class LinkedListIterator:
+        def __init__(self,first) -> None:
+            self.current=first
+        def __iter__(self):
+            return self
+        def __next__(self):
+            if self.current==None:
+                raise StopIteration
+            else:
+                data=self.current.data
+                self.current=self.current.next_node
+                return data
+    class NodeForLinkedList:
+        """class to store data in linked list """
 
-    def __init__(self,data=None) -> None:
-        """Node contains 3 fields(data,next node,previous node) constructor gets data to insert inside node or sets it to None """
-        self.data=data
-        self.next_node=None
-        self.previos_node=None
-class LinkedListIterator:
-    def __init__(self,first) -> None:
-        self.current=first
-    def __iter__(self):
-        return self
-    def __next__(self):
-        if self.current==None:
-            raise StopIteration
-        else:
-            data=self.current.data
-            self.current=self.current.next_node
-            return data
+        def __init__(self,data=None) -> None:
+            """Node contains 3 fields(data,next node,previous node) constructor gets data to insert inside node or sets it to None """
+            self.data=data
+            self.next_node=None
+            self.previos_node=None  
 class NaiveHashMap:
     """simple hash map implementation. methods works in O(1) while map is not overfilled,else O(N)"""
 
@@ -372,8 +372,56 @@ class Matrix_linearized:
         index=self.columns*row+column
         data=self.body[index]
         return data
-class Heap:
-    pass
+class MHeap:
+    """simple Heap implementation only for keys represented by int,else raises assertion error
+    smallest key on top of heap"""
+
+    class pair:
+        """pair key,data for heap"""
+
+        def __init__(self,key:int,value:Any) -> None:
+            assert(type(key)==int)
+            self.key=key
+            self.value=value           
+    def __init__(self) -> None:
+        """initialize as emty dyn array and number of elements=0"""
+        self.body=[]
+        self.number_of_items=0
+    def add_pair(self,key:int,data:Any='')->None:#temporaly stores default data for debugging
+        """add pair to the heap works only for int keys else assertonError. O(logN)"""
+        assert(type(key)==int)
+        appended=self.pair(key,data)
+        self.body.append(appended)
+        self.number_of_items+=1
+        self.place_correct(self.number_of_items)#giving as arg position(index+1) of element
+    def place_correct(self,position:int)->None:#NOT INDEX
+        if self.number_of_items==0 or self.number_of_items==1:
+            return
+        while position>1:
+            if self.body[position-1].key<self.body[position//2-1].key:
+                (self.body[position-1],self.body[position//2-1])=(self.body[position//2-1],self.body[position-1])
+                 #comparing element with its parent and replasing if parent bigger than element
+            position=position//2
+    def dbg(self)->None:
+        i=0
+        for (index,pair) in enumerate(self.body):
+            print(pair.key,end=' ')
+            if index==i:
+                print('\n',end='')
+                i=i*2+2
+        print('')
+    def get_min(self)->pair:#temporaly returns only pair.key for debugging
+        """delete and return min value from heap if heap is empty raises value error"""
+        pass
+
+            
+        
+
+
+
+
+
+    
 
 
 
