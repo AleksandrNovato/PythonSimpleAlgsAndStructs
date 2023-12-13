@@ -171,8 +171,68 @@ class Test_Structs_lib(unittest.TestCase):
             self.assertEqual('data',m.body[(m.columns*row)+column])
             self.assertEqual(m.get_data(row,column),'data')
             #palce_data() and get_data() works correctly
+    def test_Heap(self):
+        for i in range(100):
+            random.seed()
+            h=sl.MHeap()
+            list_of_pairs=[]
+            number_of_items=random.randint(1,100)
+            for i in range(number_of_items):
+                key=random.randint(-100,100)
+                value=f'data{key}'
+                list_of_pairs.append((key,value))
+            #created check-list with pairs key,value            
+            for (key,value) in list_of_pairs:
+                h.add_pair(key,value)
+            #filling our heap from check-list manually not by buildheap() to check add_pair()
+            from_heap=[]
+            for i in range(number_of_items):
+                getted_pair=h.get_min()
+                from_heap.append((getted_pair.key,getted_pair.value))
+            #creating list from our heap to compare with check list
+            list_of_pairs.sort(key=lambda obj:obj[0])
+            self.assertEqual(from_heap,list_of_pairs)
+            #comparing our list from heap with sorted check list
+        class test_pair:
+            """pair key,data for test_heap"""
+
+            def __init__(self,key:int,value=None) -> None:
+                assert(type(key)==int)
+                self.key=key
+                self.value=value
+            def __str__(self):
+                return f'|{self.key}:{self.value}|'
+
+        check_list=[]
+        for i in range(number_of_items):
+            pair=test_pair(random.randint(-100,100),f'data{i}')
+            check_list.append(pair)
+        b=sl.buildHeap(check_list)
+        #next check list with random obj test_pair. created heap b by func build.heap
+        check_list.sort(key=lambda obj:obj.key)
+        check_list=[pair.key for pair in check_list]
+        from_heap=[]
+        for i in range(number_of_items):
+            from_heap.append(b.get_min().key)
+        #getting second array from our heap to compare
+        self.assertEqual(from_heap,check_list)                
+        #compare keys  in both lisths
+        
     def test_next(self):
-        pass
+        self.assert_(True)
+            
+       
+
+                
+
+
+            
+            
+
+            
+
+
+            
     def test_next(self):
         pass
     def test_next(self):

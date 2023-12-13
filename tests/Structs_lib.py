@@ -379,7 +379,7 @@ class MHeap:
     class pair:
         """pair key,data for heap"""
 
-        def __init__(self,key:int,value:Any) -> None:
+        def __init__(self,key:int,value:Any=None) -> None:
             assert(type(key)==int)
             self.key=key
             self.value=value           
@@ -387,14 +387,15 @@ class MHeap:
         """initialize as emty dyn array and number of elements=0"""
         self.body=[]
         self.number_of_items=0
-    def add_pair(self,key:int,data:Any='')->None:#temporaly stores default data for debugging
+    def add_pair(self,key:int,data:Any=None)->None:#temporaly stores default data for debugging
         """add pair to the heap works only for int keys else assertonError. O(logN)"""
         assert(type(key)==int)
         appended=self.pair(key,data)
         self.body.append(appended)
         self.number_of_items+=1
-        self.place_correct(self.number_of_items)#giving as arg position(index+1) of element
-    def place_correct(self,position:int)->None:#NOT INDEX
+        self.diffuse_up(self.number_of_items)#giving as arg position(index+1) of element
+    def diffuse_up(self,position:int)->None:#NOT INDEX
+        """pushes up 'light key' in position in O(logN)"""
         if self.number_of_items==0 or self.number_of_items==1:
             return
         while position>1:
@@ -409,11 +410,70 @@ class MHeap:
             if index==i:
                 print('\n',end='')
                 i=i*2+2
-        print('')
-    def get_min(self)->pair:#temporaly returns only pair.key for debugging
-        """delete and return min value from heap if heap is empty raises value error"""
-        pass
+        print(f'items={self.number_of_items}')
+    def get_min(self)->pair:
+        """delete and return min value from heap if heap is empty returns None
+        O(klogN)~O(logN) but k is pretty high due to not the best implementation"""
+        if (self.number_of_items)==0:
+            return None
+        (self.body[0],self.body[len(self.body)-1])=(self.body[len(self.body)-1],self.body[0])
+        #swap first(min) element with last
+        returned=self.body.pop()
+        self.number_of_items-=1
+        self.diffuse_down(1)
+        return returned
+    def diffuse_down(self,position:int)->None:
+        """pushes down 'heavy key' by given position in O(log(N))"""
+        def min_child_pos(position:int)->int:
+            lc_pos=position*2
+            rc_pos=position*2+1
+            if rc_pos>self.number_of_items:#right child doesnt exist
+                return lc_pos
+            else:
+                if self.body[lc_pos-1].key<self.body[rc_pos-1].key:
+                    return lc_pos
+                else:
+                    return rc_pos
+        while position<=self.number_of_items//2:
+            mc_pos=min_child_pos(position)
+            if self.body[position-1].key<=self.body[mc_pos-1].key:#elements in order
+                return
+            else:
+                (self.body[position-1],self.body[mc_pos-1])=(self.body[mc_pos-1],self.body[position-1])
+                #swapping elements
+                position=mc_pos#child becomes new parent in next iteration
+    def __str__(self)->str:
+        returned=''
+        for i in range(self.number_of_items):
+            returned=returned+f'|{self.body[i].key},{self.body[i].value}|'
+        return returned
+def buildHeap(A:list)->MHeap:
+        """create heap by content from given list in O(N) items in list must have .key and .value attribute """
+        h=MHeap()
+        for i in A:
+            h.body.append(i)
+        h.number_of_items=len(A)
+        position=len(A)//2
+        while position>0:
+            h.diffuse_down(position)
+            position=position-1
+        return h
 
+
+
+
+
+
+
+
+            
+
+                 
+            
+            
+
+            
+            
             
         
 
