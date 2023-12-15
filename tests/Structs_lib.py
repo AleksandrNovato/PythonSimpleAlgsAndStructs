@@ -374,7 +374,7 @@ class Matrix_linearized:
         return data
 class MHeap:
     """simple Heap implementation only for keys represented by int,else raises assertion error
-    smallest key on top of heap"""
+    smallest key on top of heap. Based on list so sometimes works slowlier than it should due to list memory reallocation"""
 
     class pair:
         """pair key,data for heap"""
@@ -448,7 +448,9 @@ class MHeap:
             returned=returned+f'|{self.body[i].key},{self.body[i].value}|'
         return returned
 def buildHeap(A:list)->MHeap:
-        """create heap by content from given list in O(N) items in list must have .key and .value attribute """
+        """create heap by content from given list in O(N*2) (due to coping list) items in list must have .key and .value attribute
+         can change order of equal keys so its unstable
+         """
         h=MHeap()
         for i in A:
             h.body.append(i)
@@ -458,6 +460,57 @@ def buildHeap(A:list)->MHeap:
             h.diffuse_down(position)
             position=position-1
         return h
+class BinaryTreeOfSearch:
+    def __init__(self) -> None:
+        self.root=None
+        self.number_of_items=0
+    class NodeForThree:
+        """class to store in binary tree,contains links to parent,childs and data
+        Key must be int number"""
+
+        def __init__(self,key:int,data=None,paretnt=None,left=None,right=None) -> None:
+            assert(type(key)==int)
+            self.parent=paretnt
+            self.left=left
+            self.right=right
+            self.data=data
+            self.key=key
+        def __str__(self)->str:
+            return str(self.key)
+    def add_pair(self,key,data=None)->None:
+        """Adds node with data into position in bynary tree depending on key in log(N)->N depending of balance of tree
+        Replacec data by equal keys"""
+        added_node=self.NodeForThree(key,data)
+        if self.number_of_items==0:
+            self.root=added_node
+            self.number_of_items+=1
+            return        
+        current=self.root
+        while current!=None:
+            if added_node.key<current.key:
+                if current.left==None:
+                    current.left=added_node                    
+                    added_node.parent=current
+                    self.number_of_items+=1
+                    return
+                current=current.left                
+            elif added_node.key>current.key:
+                if current.right==None:
+                    current.right=added_node                    
+                    added_node.parent=current
+                    self.number_of_items+=1
+                    return
+                current=current.right
+            elif added_node.key==current.key:
+                current.data=added_node.data
+                return
+    def get(self,key)->Any:
+        pass
+
+        
+
+            
+
 
 
 

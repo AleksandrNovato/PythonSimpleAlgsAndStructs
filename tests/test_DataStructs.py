@@ -216,8 +216,7 @@ class Test_Structs_lib(unittest.TestCase):
             from_heap.append(b.get_min().key)
         #getting second array from our heap to compare
         self.assertEqual(from_heap,check_list)                
-        #compare keys  in both lisths
-        
+        #compare keys  in both lisths        
     def test_next(self):
         self.assert_(True)
             
