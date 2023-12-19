@@ -475,8 +475,22 @@ class BinaryTreeOfSearch:
             self.right=right
             self.data=data
             self.key=key
-        def __str__(self)->str:
-            return str(self.key)
+        def is_root(self)->bool:
+            if self.parent==None:
+                return True
+            return False
+        def is_leaf(self)->bool:
+            if self.right==None and self.left==None:
+                return True
+            return False
+        def has_left(self)->bool:
+            if self.left!=None:
+                return True
+            return False
+        def has_right(self)->bool:
+            if self.right!=None:
+                return True
+            return False
     def add_pair(self,key,data=None)->None:
         """Adds node with data into position in bynary tree depending on key in log(N)->N depending of balance of tree
         Replacec data by equal keys"""
@@ -505,7 +519,36 @@ class BinaryTreeOfSearch:
                 current.data=added_node.data
                 return
     def get(self,key)->Any:
-        pass
+        """returns data by given key in log(N)if balenced if where ais no key raises keyError"""
+        current=self.root
+        while current!=None:
+            if current.key==key:
+                return current.data
+            elif current.key<key:
+                current=current.right
+            elif current.key>=key:
+                current=current.left
+        raise KeyError       
+    def delete_key(self,key)->None:
+        """deletes node by given key from the tree in log(N) if balanced"""
+        current=self.root
+        tree=self
+        def delete_node(tree,node)->None:
+            pass
+
+            print('node.key',node.key,'deleted')               
+        while current!=None:
+            if current.key==key:
+                delete_node(tree,current)
+                return
+            elif current.key<key:
+                current=current.right
+            elif current.key>=key:
+                current=current.left
+        return
+        
+            
+
 
         
 
