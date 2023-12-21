@@ -2,6 +2,7 @@
 Structs_lib its primitive studyind-porpouse handmade library of data structures
 """
 from typing import Any
+import math
 
 class MyStack:
     """simple Stack realization"""
@@ -461,99 +462,136 @@ def buildHeap(A:list)->MHeap:
             position=position-1
         return h
 class BinaryTreeOfSearch:
+    """Clumsy implementation of bst most of methods works in O(logN->N) depending on balance"""
     def __init__(self) -> None:
         self.root=None
-        self.number_of_items=0
-    class NodeForThree:
-        """class to store in binary tree,contains links to parent,childs and data
-        Key must be int number"""
+    def add_pair(self,key:int,data=None)->None:
+        """adds pair key,data to bynary tree. If key is already exists replaces data"""
+        added_node=NodeForThree(key,data)
+        if self.root==None:
+            self.root=added_node
+            return
+        current=self.root
+        while current!=None:
+            if current.key==key:#replacing existing key
+                current.data=data
+                return
+            elif current.key>key:#placing node if left place is empty or keep looking
+                if current.left==None:
+                    current.left=added_node
+                    return
+                current=current.left
+            elif current.key<key:#placing node if right plave if empty or keep loking
+                if current.right==None:
+                    current.right=added_node
+                    return
+                current=current.right
+    def print_bfs(self)->None:
+        """prints content of tree in bfs order"""
+        if self.root==None:return
+        node=self.root
+        def bfs(node)->None:
+            q=MyDeque()
+            q.add_last(node)
+            while q.length!=0:
+                print()
+                for i in range(q.length):
+                    elem=q.get_first()
+                    print(elem,end=',')
+                    if elem.has_left():q.add_last(elem.left)
+                    if elem.has_right():q.add_last(elem.right)
+        bfs(node)#wow my deque actually works
+        print()
+    def print_dfs(self)->None:
+        """prints content of tree in dfs order"""
+        if self.root==None:return
+        root=self.root
+        def dfs(node):
+            stack=[]
+            stack.append(node)
+            while len(stack)>0:
+                node=stack.pop()
+                print(node,end=',')
+                if node.has_right():stack.append(node.right)
+                if node.has_left():stack.append(node.left)
+                
+        dfs(root)
+        print()
+    def get_value(self,key:int)->Any:
+        """returns value by given key if key does not exists raises keyerror"""
+        if self.root==None:return
+        current=self.root
+        while current!=None:
+            if current.key==key:return current.data
+            elif key<current.key:
+                current=current.left
+            else:
+                current=current.right
+        raise KeyError
+    def delete_key(self,key)->None:
+        """deletes node by given key from the tree"""
+        if self.root==None:return
+        def find_successor(node:NodeForThree)->NodeForThree:
+            successor=node.right
+            while successor!=None:
+                if successor.has_left():successor=successor.left
+                else:return successor
+        def delete_from_sub_tree(node,key)->NodeForThree or None:
+            if node==None:return None
+            elif key==node.key:
+                #case 1: two childs
+                if node.has_left() and node.has_right():
+                    successor=find_successor(node)
+                    node.key=successor.key
+                    node.data=successor.data
+                    node.right=delete_from_sub_tree(node.right,successor.key)
+                #case 2: no childs
+                elif not node.has_left() and not node.has_right():
+                    return None
+                #case 3: left child
+                elif node.has_left():
+                    return node.left
+                #case 4 rigth child
+                elif node.has_right():
+                    return node.right
+            elif key>node.key:
+                node.right=delete_from_sub_tree(node.right,key)
+            else:
+                node.left=delete_from_sub_tree(node.left,key)
+            return node
+        delete_from_sub_tree(self.root,key)
+class NodeForThree:
+    """class to store in binary tree,contains links to parent,childs and data
+    Key must be int number"""
 
-        def __init__(self,key:int,data=None,paretnt=None,left=None,right=None) -> None:
-            assert(type(key)==int)
-            self.parent=paretnt
-            self.left=left
-            self.right=right
-            self.data=data
-            self.key=key
-        def is_root(self)->bool:
-            if self.parent==None:
-                return True
-            return False
-        def is_leaf(self)->bool:
-            if self.right==None and self.left==None:
-                return True
-            return False
-        def has_left(self)->bool:
+    def __init__(self,key:int,data:Any) -> None:
+        assert(type(key)==int)
+        self.left=None
+        self.right=None
+        self.data=data
+        self.key=key
+    def is_leaf(self)->bool:
+        if self.right==None and self.left==None:
+            return True
+        return False
+    def has_left(self)->bool:
             if self.left!=None:
                 return True
             return False
-        def has_right(self)->bool:
-            if self.right!=None:
-                return True
-            return False
-    def add_pair(self,key,data=None)->None:
-        """Adds node with data into position in bynary tree depending on key in log(N)->N depending of balance of tree
-        Replacec data by equal keys"""
-        added_node=self.NodeForThree(key,data)
-        if self.number_of_items==0:
-            self.root=added_node
-            self.number_of_items+=1
-            return        
-        current=self.root
-        while current!=None:
-            if added_node.key<current.key:
-                if current.left==None:
-                    current.left=added_node                    
-                    added_node.parent=current
-                    self.number_of_items+=1
-                    return
-                current=current.left                
-            elif added_node.key>current.key:
-                if current.right==None:
-                    current.right=added_node                    
-                    added_node.parent=current
-                    self.number_of_items+=1
-                    return
-                current=current.right
-            elif added_node.key==current.key:
-                current.data=added_node.data
-                return
-    def get(self,key)->Any:
-        """returns data by given key in log(N)if balenced if where ais no key raises keyError"""
-        current=self.root
-        while current!=None:
-            if current.key==key:
-                return current.data
-            elif current.key<key:
-                current=current.right
-            elif current.key>=key:
-                current=current.left
-        raise KeyError       
-    def delete_key(self,key)->None:
-        """deletes node by given key from the tree in log(N) if balanced"""
-        current=self.root
-        tree=self
-        def delete_node(tree,node)->None:
-            pass
-
-            print('node.key',node.key,'deleted')               
-        while current!=None:
-            if current.key==key:
-                delete_node(tree,current)
-                return
-            elif current.key<key:
-                current=current.right
-            elif current.key>=key:
-                current=current.left
-        return
-        
-            
+    def has_right(self)->bool:
+        if self.right!=None:
+            return True
+        return False
+    def set_left(self,node)->None:
+        self.left=node
+    def set_right(self,node)->None:
+        self.right=node
+    def __str__(self)->str:
+        return str(self.key)
 
 
-        
 
-            
-
+    
 
 
 
