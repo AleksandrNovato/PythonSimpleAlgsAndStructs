@@ -2,7 +2,6 @@
 Structs_lib its primitive studyind-porpouse handmade library of data structures
 """
 from typing import Any
-import math
 
 class MyStack:
     """simple Stack realization"""
@@ -559,7 +558,7 @@ class BinaryTreeOfSearch:
             else:
                 node.left=delete_from_sub_tree(node.left,key)
             return node
-        delete_from_sub_tree(self.root,key)
+        self.root=delete_from_sub_tree(self.root,key)
 class NodeForThree:
     """class to store in binary tree,contains links to parent,childs and data
     Key must be int number"""

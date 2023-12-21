@@ -217,20 +217,25 @@ class Test_Structs_lib(unittest.TestCase):
         #getting second array from our heap to compare
         self.assertEqual(from_heap,check_list)                
         #compare keys  in both lisths        
+    def test_Tree(self):
+        
+        for i in range(100):
+            random.seed()
+            tree=sl.BinaryTreeOfSearch()
+            check_list=[]
+            for i in range(1,random.randint(1,100)):
+                check_list.append(random.randint(-1000,1000))
+            shuffled=check_list.copy()
+            random.shuffle(shuffled)
+            for item in shuffled:
+                tree.add_pair(item,item)#currently value is the same as key yo simplify
+            for item in check_list:
+                self.assertEqual(item,tree.get_value(item))
+            for item in check_list:
+                tree.delete_key(item)
+            self.assert_(tree.root==None)
     def test_next(self):
-        self.assert_(True)
-            
-       
-
-                
-
-
-            
-            
-
-            
-
-
+        self.assert_(True)           
             
     def test_next(self):
         pass
