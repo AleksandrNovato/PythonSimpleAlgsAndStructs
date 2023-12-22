@@ -1,9 +1,9 @@
 
 import unittest 
 import random
-import sys 
+ 
 import string
-#sys.path.append("../PythonSimpleAlgsAndStructs/lib")
+
 import Structs_lib as sl
 
 """Tests for Structs_lib"""
@@ -218,7 +218,7 @@ class Test_Structs_lib(unittest.TestCase):
         self.assertEqual(from_heap,check_list)                
         #compare keys  in both lisths        
     def test_Tree(self):
-        
+
         for i in range(100):
             random.seed()
             tree=sl.BinaryTreeOfSearch()
@@ -235,8 +235,7 @@ class Test_Structs_lib(unittest.TestCase):
                 tree.delete_key(item)
             self.assert_(tree.root==None)
     def test_next(self):
-        self.assert_(True)           
-            
+        self.assert_(True)          
     def test_next(self):
         pass
     def test_next(self):
