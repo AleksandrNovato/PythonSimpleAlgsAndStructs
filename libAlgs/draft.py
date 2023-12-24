@@ -1,8 +1,11 @@
 import algs as a
 
 def main():
-   A=[1,3,123,132,0,12,1,32,31,9]
-   B=a.count_sort(A)
-   print(B)
+   A=[i for i in range(27,-1,-1)]
+   print(A)
+   a.sort_TH(A)
+   print(A)
+   
+   
 
 main()
