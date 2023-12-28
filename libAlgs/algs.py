@@ -3,31 +3,31 @@
 import random
 
 
-def insert_sort(A:list,low_bound=0,high_bound=None)->None:
+def insert_sort(A:list[int])->None:
     """insertion in-place sort of array by increasing O(N**2) can sort array partitionally.
     high bound is  included"""
     assert(type(A)==list)
-    if high_bound==None:high_bound=len(A)-1
-    for inserted_item_index in range(low_bound+1,high_bound+1):
+    
+    for inserted_item_index in range(1,len(A)):
         j=inserted_item_index
-        while j>low_bound and A[j]<A[j-1]:
+        while j>0 and A[j]<A[j-1]:
             (A[j],A[j-1])=(A[j-1],A[j])
             j-=1            
-def bubble_sort(A:list)->None:
+def bubble_sort(A:list[int])->None:
     """bubble in-place sort of array by increasing O(N**2)"""
     assert(type(A)==list)
     for i in range(1,len(A)):
         for j in range(len(A)-i):
             if A[j]>A[j+1]:
                 (A[j],A[j+1])=(A[j+1],A[j])
-def choice_sort(A:list)->None:
+def choice_sort(A:list[int])->None:
     """choice in-place sort of array by increasing O(N**2)"""
     assert(type(A)==list)
     for i in range(0,len(A)-1):
         for j in range(i+1,len(A)):
             if A[j]<A[i]:
                 (A[j],A[i])=(A[i],A[j])
-def count_sort(A:list)->list:
+def count_sort(A:list[int])->list:
     """ count sort O(N)(!in this realization O(N+M*2)actually but assuming M is small its O(N)!)
      operations O(M) by memory M-diffrent elements in array
     implementation is overcomplicated because I played with situation where we dont know range of M
@@ -47,23 +47,75 @@ def count_sort(A:list)->list:
         for repeat in range(F[key]):#cost nothing if M-small number
             output.append(key)#but if M is large better never use this sort xD
     return output
-def sort_TH(A:list)->None:
-    """Quick sort in plase O(N**2) o(NlogN) in average """    
+def sort_TH(A:list[int])->None:
+    """Quick sort in plase O(N**2)->O(NlogN) in average 
+    Splits array by pivots recursivly until parts will be smaller than 10,on small parts uses insert sort"""    
+
     
     def _sort_TH(A,left,right):
         if right-left<10:
-            insert_sort(A,left,right)
+            A[left:right+1]=sorted(A[left:right+1])#fix me to not consume add memory
         else:
-            pivot=left
-            for item in A[left+1:right+1]:
-                if item<A[pivot]:
-                    A[pivot],A[pivot+1]=A[pivot+1],A[pivot]
-                    pivot+=1
-            _sort_TH(A,left,pivot)
-            _sort_TH(A,pivot,right)
+            pivot=A[left]
+            l=left+1
+            r=right
+            while True:
+                while l<=r and A[l]<=pivot:
+                    l+=1                    
+                while r>=l and A[r]>=pivot:
+                    r-=1                
+                if r>l:
+                    A[l],A[r]=A[r],A[l]
+                else:
+                    break              
+            A[left],A[r]=A[r],A[left]
+            _sort_TH(A,left,r-1)
+            _sort_TH(A,r+1,right)
+            
     assert(type(A)==list)
+    if len(A)<=1:
+        return
     _sort_TH(A,0,len(A)-1)
-
+def merge_sort(A:list[int])->None:
+    """memory greedy realization of merge sort O(NlogN) operations and O(M) by memory"""
+    def merge(A:list,B:list)->list:
+        C=[0]*(len(A)+len(B))
+        a=0
+        b=0
+        c=0
+        while a<len(A) and b<len(B):
+            if A[a]<=B[b]:
+                C[c]=A[a]
+                a+=1
+            else:
+                C[c]=B[b]
+                b+=1
+            c+=1
+        while a<len(A):
+            C[c]=A[a]
+            a+=1
+            c+=1
+        while b<len(B):
+            C[c]=B[b]
+            b+=1
+            c+=1 
+        return C    
+    def _merge_sort(A):
+        if len(A)<=10:
+            A.sort()
+        else:
+            middle=len(A)//2
+            L=A[0:middle]
+            R=A[middle:len(A)]
+            _merge_sort(L)
+            _merge_sort(R)
+            sorted=merge(L,R)
+            A[::]=sorted[::]
+              
+    assert(type(A)==list)
+    if len(A)==1:
+        return A
+    _merge_sort(A)
                     
 
     
